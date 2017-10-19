@@ -16,7 +16,7 @@ var friendsArray = [
     ]
   },
   {
-    "name":"Pups",
+    "name":"Pupcake",
     "photo":"	https://www.rover.com/blog/wp-content/uploads/2015/05/dog-candy-junk-food.jpg",
     "scores":[
       "2",

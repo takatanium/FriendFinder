@@ -1,23 +1,21 @@
 let statements = [
-  'Your mind is always buzzing with unexplored ideas and plans.',
-  'Generally speaking, you rely more on your experience than your imagination.',
-  'You find it easy to stay relaxed and focused even when there is some pressure.',
-  'You rarely do something just out of sheer curiosity.',
-  'People can rarely upset you.',
-  'It is often difficult for you to relate to other people’s feelings.',
-  'In a discussion, truth should be more important than people’s sensitivities.',
-  'You rarely get carried away by fantasies and ideas.',
-  'You think that everyone’s views should be respected regardless of whether they are supported by facts or not.',
-  'You feel more energetic after spending time with a group of people.'
+  `Your mind is always buzzing with unexplored ideas and plans.`,
+  `Generally speaking, you rely more on your experience than your imagination.`,
+  `You find it easy to stay relaxed and focused even when there is some pressure.`,
+  `You rarely do something just out of sheer curiosity.`,
+  `People can rarely upset you.`,
+  `It is often difficult for you to relate to other people’s feelings.`,
+  `In a discussion, truth should be more important than people’s sensitivities.`,
+  `You rarely get carried away by fantasies and ideas.`,
+  `You think that everyone’s views should be respected regardless of whether they are supported by facts or not.`,
+  `You feel more energetic after spending time with a group of people.`
 ];
 
 $(document).ready(function () {
-  for (let i = 0; i < statements.length; i++) {
-    $('#questionnaire').append(createSelect(`${i+1}`, statements[i], 5));
-  }
+	statements.forEach((st, i) => $('#questionnaire').append(createSel(`${i+1}`, st, 5)));
 });
 
-let createSelect = function (idNum, question, optNum) {
+let createSel = (idNum, question, optNum) => {
   let $li = $('<li>').addClass('list-group-item list-group-item form-group');
   $li.html(`<label for="q${idNum}"> ${idNum}. ${question}</label>`);
 
@@ -37,14 +35,11 @@ let createSelect = function (idNum, question, optNum) {
   return $li;
 };
 
-$(".submit").on("click", function(event) {
+$('.submit').on('click', (event) => {
   event.preventDefault();
-
   if (validateForm()) {
     let scores = [];
-    for (let i = 0; i < statements.length; i++) {
-      scores.push($(`#q${i+1}`).val());
-    }
+    statements.forEach((st, i) => scores.push($(`#q${i+1}`).val()));
      
     let newFriend = {
       name: $('#name').val().trim(),
@@ -52,26 +47,38 @@ $(".submit").on("click", function(event) {
       scores: scores
     };
 
-    $.post('/api/friends', newFriend,
-    function(data) {
-      $('#modal-title').html('<h2>Best Match!</h2>');
+    $.post('/api/friends', newFriend, (data) => {
+      $('#modal-title').html(`<h2>Best Match!</h2>`);
       $('#modal-body').html(`<h3 class="text-center">${data.name}</h3>`);
       $('#modal-body').append(`<img class="img-responsive center-block" src="${data.photo}">`);
     });
-  } else {
-    $('#modal-title').html('<h2>Error</h2>');
-    $('#modal-body').html('<h3>All fields must be filled.</h3>');
   }
-
 });
 
-let validateForm = function () {
-  if ($('#name').val().trim() === '' || $('#photo').val().trim() === '') return false; 
+let validateForm = () => {
+  let modalTitle = `Error!`;
+  let modalBody = `Something went wrong...`;
+  let pass = true;
 
-  for (let i = 0; i < statements.length; i++) {
-    if ($(`#q${i+1}`).val() === null) return false;
+  if ($('#name').val().trim() === '') {
+    modalBody = `Name field missing.`;
+    pass = false;
+  } else if ($('#photo').val().trim() === '') {
+    modalBody = `Link to Photo field missing.`;
+    pass = false;
+  } else {
+    for (let i = 0; i < statements.length; i++) {
+      if ($(`#q${i+1}`).val() === null) {
+        modalBody = `Answer for #${i+1} missing.`;
+        pass = false;
+        break;
+      }
+    }
+  }
+  if (!pass) {
+    $('#modal-title').html(`<h2>${modalTitle}</h2>`);
+    $('#modal-body').html(`<h3>${modalBody}</h3>`);
   }
 
-  return true;
+  return pass;
 };
-
