@@ -12,7 +12,7 @@ let statements = [
 ];
 
 $(document).ready(function () {
-	statements.forEach((st, i) => $('#questionnaire').append(createSel(`${i+1}`, st, 5)));
+  statements.forEach((st, i) => $('#questionnaire').append(createSel(`${i+1}`, st, 5)));
 });
 
 let createSel = (idNum, question, optNum) => {
